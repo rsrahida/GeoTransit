@@ -126,7 +126,19 @@ const CarsSidebar = () => {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logo}>
-        <span className={styles.logoDot} />
+        <span className={styles.logoDot}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M4 16.5 5.2 12a2 2 0 011.9-1.4h9.8a2 2 0 011.9 1.4l1.2 4.5M4 16.5v2.3a1 1 0 001 1h1.3a1 1 0 001-1v-1.3M4 16.5h16M20 16.5v2.3a1 1 0 01-1 1h-1.3a1 1 0 01-1-1v-1.3"
+              stroke="#1a1815"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="7.5" cy="16.5" r="1.3" fill="#1a1815" />
+            <circle cx="16.5" cy="16.5" r="1.3" fill="#1a1815" />
+          </svg>
+        </span>
         <div>
           <h2>GeoTransit</h2>
           <span>Parkinq İdarəetmə Sistemi</span>

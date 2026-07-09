@@ -2,98 +2,172 @@
 
 .sidebar {
   --bg-panel: #221f1b;
-  --grid-line: #403e37;
+  --bg-panel-soft: #2b2822;
+  --grid-line: #3a3831;
   --amber: #b6ff3f;
-  --amber-dim: rgba(182, 255, 63, 0.14);
+  --amber-dim: rgba(182, 255, 63, 0.12);
+  --amber-glow: rgba(182, 255, 63, 0.45);
   --cyan: #ffcf5c;
+  --cyan-glow: rgba(255, 207, 92, 0.5);
   --text-hi: #f8f6ee;
   --text-mid: #c3beb2;
-  --text-low: #8a8579;
+  --text-low: #837f73;
 
-  width: 260px;
+  width: 268px;
   min-height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
   flex-shrink: 0;
-  background: var(--bg-panel);
+  background: linear-gradient(160deg, #262319 0%, #1a1815 55%, #17150f 100%);
   border-right: 1px solid var(--grid-line);
   display: flex;
   flex-direction: column;
-  padding: 26px 16px;
+  padding: 26px 15px;
   font-family: "Inter", system-ui, sans-serif;
   box-sizing: border-box;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.sidebar::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 220px;
+  height: 220px;
+  pointer-events: none;
+}
+
+.sidebar::after {
+  content: "";
+  position: absolute;
+  bottom: -80px;
+  right: -80px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 207, 92, 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
 }
 
 .logo {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 4px 10px 26px;
-  margin-bottom: 18px;
+  gap: 12px;
+  padding: 8px 10px 24px;
+  margin-bottom: 22px;
   border-bottom: 1px solid var(--grid-line);
+  z-index: 1;
 }
 
 .logoDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  padding: 7px;
   flex-shrink: 0;
-  background: var(--amber);
-  box-shadow: 0 0 10px 2px rgba(182, 255, 63, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--amber) 0%, #7fd936 100%);
+  box-shadow:
+    0 0 0 1px rgba(182, 255, 63, 0.2),
+    0 6px 16px -4px var(--amber-glow);
+  position: relative;
+}
+
+.logoDot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.35),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.logoDot svg {
+  position: relative;
+  z-index: 1;
+  display: block;
 }
 
 .logo h2 {
   margin: 0;
   font-family: "Manrope", sans-serif;
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 17.5px;
+  font-weight: 800;
   color: var(--text-hi);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 .logo span {
   display: block;
-  margin-top: 2px;
-  font-family: "Inter", sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.02em;
+  margin-top: 3px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
   color: var(--text-low);
 }
 
 .menu {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .menuItem {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 13px;
   width: 100%;
   padding: 11px 12px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   background: transparent;
   color: var(--text-mid);
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 500;
   text-align: left;
   text-decoration: none;
   cursor: pointer;
-  border-left: 3px solid transparent;
   box-sizing: border-box;
+  overflow: hidden;
   transition:
-    background 0.2s ease,
+    background 0.25s ease,
     color 0.2s ease,
-    border-color 0.2s ease;
+    box-shadow 0.25s ease;
+}
+
+.menuItem::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0%;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, var(--amber), #7fd936);
+  transition: height 0.25s ease;
 }
 
 .menuItem:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-panel-soft);
   color: var(--text-hi);
 }
 
@@ -101,34 +175,59 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
   color: var(--text-low);
-  transition: color 0.2s ease;
+  background: transparent;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+  flex-shrink: 0;
 }
 
 .menuItem:hover .icon {
   color: var(--text-mid);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .menuItem.active {
-  background: var(--amber-dim);
+  background: linear-gradient(
+    90deg,
+    var(--amber-dim) 0%,
+    rgba(182, 255, 63, 0.04) 100%
+  );
   color: var(--text-hi);
-  border-left-color: var(--amber);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px rgba(182, 255, 63, 0.1);
+}
+
+.menuItem.active::before {
+  height: 60%;
+  box-shadow: 0 0 10px 1px var(--amber-glow);
 }
 
 .menuItem.active .icon {
   color: var(--amber);
+  background: rgba(182, 255, 63, 0.12);
+  box-shadow: 0 0 0 1px rgba(182, 255, 63, 0.15);
 }
 
 .footer {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 12px 4px;
-  margin-top: 10px;
-  border-top: 1px solid var(--grid-line);
+  gap: 9px;
+  padding: 16px 14px;
+  margin-top: 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--grid-line);
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
-  letter-spacing: 0.06em;
+  font-weight: 500;
+  letter-spacing: 0.07em;
   color: var(--text-low);
 }
 
@@ -137,12 +236,25 @@
   height: 6px;
   border-radius: 50%;
   background: var(--cyan);
-  box-shadow: 0 0 8px 1px var(--cyan);
+  box-shadow: 0 0 10px 2px var(--cyan-glow);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
 }
 
 @media (max-width: 900px) {
   .sidebar {
-    width: 76px;
+    width: 78px;
     padding: 20px 10px;
     align-items: center;
   }
@@ -150,7 +262,7 @@
   .logo span,
   .logo h2,
   .menuItem span:last-child,
-  .footer {
+  .footer span {
     display: none;
   }
 
@@ -162,5 +274,20 @@
   .menuItem {
     justify-content: center;
     padding: 12px;
+  }
+
+  .menuItem::before {
+    display: none;
+  }
+
+  .footer {
+    justify-content: center;
+    padding: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footerDot {
+    animation: none;
   }
 }
