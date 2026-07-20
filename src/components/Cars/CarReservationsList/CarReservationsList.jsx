@@ -35,7 +35,7 @@ const CarReservationsList = () => {
   const { reservations } = useReservations();
 
   const sorted = [...reservations].sort(
-    (a, b) => new Date(b.startTime) - new Date(a.startTime)
+    (a, b) => new Date(b.startTime) - new Date(a.startTime),
   );
 
   return (
@@ -43,19 +43,21 @@ const CarReservationsList = () => {
       <CarsSidebar />
       <main className={styles.content}>
         <div className={styles.topBar}>
-          <button className={styles.backBtn} onClick={() => navigate("/cars/parking")}>
+          <button
+            className={styles.backBtn}
+            onClick={() => navigate("/cars/parking")}
+          >
             ← Parkinqlərə qayıt
           </button>
-          <div>
-            <h2>Rezervasiyalar</h2>
-            <span className={styles.subtitle}>{reservations.length} rezervasiya</span>
-          </div>
         </div>
 
         {sorted.length === 0 ? (
           <div className={styles.empty}>
             <p>Hələ heç bir rezervasiya yoxdur.</p>
-            <button className={styles.enterBtn} onClick={() => navigate("/cars/parking")}>
+            <button
+              className={styles.enterBtn}
+              onClick={() => navigate("/cars/parking")}
+            >
               Parkinq seç →
             </button>
           </div>

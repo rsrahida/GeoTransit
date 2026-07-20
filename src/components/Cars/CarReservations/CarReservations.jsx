@@ -53,7 +53,7 @@ const CarReservations = () => {
       container: mapDivRef.current,
       map,
       center: [parking.coordinates.lng, parking.coordinates.lat],
-      zoom: 19,
+      zoom: 20.5,
     });
 
     const graphicsLayer = new GraphicsLayer();
@@ -165,36 +165,26 @@ const CarReservations = () => {
     <div className={styles.page}>
       <CarsSidebar />
       <main className={styles.content}>
+        <div className={styles.mapWrapper}>
+          <div ref={mapDivRef} className={styles.mapContainer} />
+        </div>
+
         <div className={styles.topBar}>
-          <button
-            className={styles.backBtn}
-            onClick={() => navigate("/cars/parking")}
-          >
-            ← Geri
-          </button>
           <div>
             <h2>{parking.name}</h2>
-            <span className={styles.subtitle}>
-              {availableCount}/{parking.totalSpots} boş yer ·{" "}
-              {parking.pricePerHour} AZN/saat
-            </span>
           </div>
         </div>
 
-        <div className={styles.mapWrapper}>
-          <div ref={mapDivRef} className={styles.mapContainer} />
-
-          <div className={styles.legend}>
-            <span>
-              <i className={styles.dotGreen} /> Boş
-            </span>
-            <span>
-              <i className={styles.dotRed} /> Dolu
-            </span>
-            <span>
-              <i className={styles.dotYellow} /> Rezerv olunub
-            </span>
-          </div>
+        <div className={styles.legend}>
+          <span>
+            <i className={styles.dotGreen} /> Boş
+          </span>
+          <span>
+            <i className={styles.dotRed} /> Dolu
+          </span>
+          <span>
+            <i className={styles.dotYellow} /> Rezerv olunub
+          </span>
         </div>
 
         {selectedSpot && (
@@ -213,7 +203,9 @@ const CarReservations = () => {
               {selectedSpot.status !== "empty" ? (
                 <>
                   <h3>Yer {selectedSpot.label}</h3>
-                  <p className={styles.occupiedNote}>Bu yer artıq tutulub.</p>
+                  <p className={styles.occupiedNote}>
+                    Bu yer artıq tutulmuşdur
+                  </p>
                   {selectedSpot.car && (
                     <div className={styles.infoRow}>
                       <span>Maşın:</span>
