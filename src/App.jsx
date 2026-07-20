@@ -5,6 +5,7 @@ import Cars from "./components/Cars/Cars";
 import Buses from "./components/Buses/Buses";
 import CarParking from "./components/Cars/CarParking/CarParking";
 import CarReservations from "./components/Cars/CarReservations/CarReservations";
+import CarReservationsList from "./components/Cars/CarReservationsList/CarReservationsList";
 import CarSearch from "./components/Cars/CarSearch/CarSearch";
 import CarStatistics from "./components/Cars/CarStatistics/CarStatistics";
 import CarReports from "./components/Cars/CarReports/CarReports";
@@ -16,7 +17,8 @@ const App = () => {
         <Route path="/" element={<ModuleSelectionPage />} />
         <Route path="/cars" element={<Cars />} />
         <Route path="/cars/parking" element={<CarParking />} />
-        <Route path="/cars/reservations" element={<CarReservations />} />
+        <Route path="/cars/reservations" element={<CarReservationsList />} />
+        <Route path="/cars/reservations/:parkingId" element={<CarReservations />} />
         <Route path="/cars/search" element={<CarSearch />} />
         <Route path="/cars/statistics" element={<CarStatistics />} />
         <Route path="/cars/reports" element={<CarReports />} />
