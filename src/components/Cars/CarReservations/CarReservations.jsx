@@ -20,7 +20,6 @@ const STATUS_COLORS = {
 
 const CarReservations = () => {
   const { parkingId } = useParams();
-  const navigate = useNavigate();
 
   const parking = parkings.find((p) => p.id === parkingId);
   const { spots, updateSpotStatus } = useSpots(parkingId);
