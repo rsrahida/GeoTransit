@@ -383,6 +383,358 @@
   box-shadow: none;
 }
 
+.typeToggle {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bg-panel-soft);
+  border: 1px solid var(--grid-line);
+}
+
+.typeBtn {
+  flex: 1;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-mid);
+  font-family: "Manrope", sans-serif;
+  font-weight: 600;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.typeBtn:hover {
+  color: var(--text-hi);
+}
+
+.typeBtnActive {
+  background: var(--amber-dim);
+  color: var(--amber);
+  box-shadow: 0 0 0 1px rgba(182, 255, 63, 0.25);
+}
+
+.dateInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--grid-line);
+  background: var(--bg-panel-hi);
+  color: var(--text-hi);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  outline: none;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-low);
+  padding-left: 2px;
+}
+
+/* Custom tarix/saat seçici */
+.dtField {
+  position: relative;
+  width: 100%;
+}
+
+.dtTrigger {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  border: 1px solid var(--grid-line);
+  background: var(--bg-panel-soft);
+  color: var(--text-hi);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.dtTrigger:hover {
+  border-color: rgba(182, 255, 63, 0.3);
+}
+
+.dtTriggerIcon {
+  opacity: 0.7;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.dtPopover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: var(--bg-panel-hi);
+  border: 1px solid var(--grid-line);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 20px 40px -16px rgba(0, 0, 0, 0.6);
+  animation: cardIn 0.18s ease;
+}
+
+.dtHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.dtNavBtn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--grid-line);
+  border-radius: 7px;
+  background: var(--bg-panel-soft);
+  color: var(--text-mid);
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.dtNavBtn:hover:not(:disabled) {
+  border-color: rgba(182, 255, 63, 0.3);
+  color: var(--amber);
+}
+
+.dtNavBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.dtMonthLabel {
+  font-family: "Manrope", sans-serif;
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--text-hi);
+  text-transform: capitalize;
+}
+
+.dtWeekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.dtWeekdays span {
+  text-align: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-low);
+  padding: 4px 0;
+}
+
+.dtGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 12px;
+}
+
+.dtDayEmpty {
+  display: block;
+}
+
+.dtDay {
+  aspect-ratio: 1 / 1;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-mid);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.dtDay:hover:not(:disabled) {
+  background: var(--bg-panel-soft);
+  color: var(--text-hi);
+}
+
+.dtDayToday {
+  border-color: rgba(255, 207, 92, 0.4);
+  color: var(--cyan);
+}
+
+.dtDaySelected {
+  background: var(--amber);
+  color: #1a1815;
+  font-weight: 700;
+}
+
+.dtDaySelected:hover {
+  background: var(--amber);
+  color: #1a1815;
+}
+
+.dtDayDisabled {
+  color: var(--text-low);
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.dtTimeRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-top: 1px solid var(--grid-line);
+  margin-bottom: 10px;
+}
+
+.dtTimeBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.dtTimeLabel {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-low);
+}
+
+.dtTimeControls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dtTimeBtn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--grid-line);
+  border-radius: 6px;
+  background: var(--bg-panel-soft);
+  color: var(--text-mid);
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.dtTimeBtn:hover {
+  border-color: rgba(182, 255, 63, 0.3);
+  color: var(--amber);
+}
+
+.dtTimeValue {
+  min-width: 28px;
+  text-align: center;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-hi);
+}
+
+.dtTimeColon {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-low);
+  padding-bottom: 8px;
+}
+
+.dtFooter {
+  display: flex;
+  gap: 8px;
+}
+
+.dtQuickBtn {
+  flex: 1;
+  padding: 9px;
+  border: 1px solid var(--grid-line);
+  border-radius: 8px;
+  background: var(--bg-panel-soft);
+  color: var(--text-mid);
+  font-family: "Manrope", sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.dtQuickBtn:hover {
+  border-color: rgba(255, 207, 92, 0.3);
+  color: var(--cyan);
+}
+
+.dtConfirmBtn {
+  flex: 1;
+  padding: 9px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--amber) 0%, #7fd936 100%);
+  color: #1a1815;
+  font-family: "Manrope", sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dtConfirmBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px -8px var(--amber-glow);
+}
+
+.timerText {
+  font-size: 10px;
+}
+
 @media (max-width: 900px) {
   .content {
     margin-left: 78px;

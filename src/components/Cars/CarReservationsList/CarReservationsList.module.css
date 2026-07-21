@@ -254,6 +254,21 @@
   box-shadow: 0 10px 24px -6px var(--amber-glow);
 }
 
+.stopBtn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #ef4444;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.stopBtn:hover {
+  background: #dc2626;
+}
+
 @media (max-width: 900px) {
   .content {
     margin-left: 78px;

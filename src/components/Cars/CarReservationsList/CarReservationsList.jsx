@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./CarReservationsList.module.css";
 import CarsSidebar from "../CarsSidebar/CarsSidebar";
 import { parkings } from "../../../data/mockData";
 import { useReservations } from "../../hooks/useReservations";
+import { updateSpotStatusDirect } from "../../hooks/useSpots";
 
 const STATUS_LABELS = {
-  active: "Aktiv",
+  active: "Aktiv (davam edir)",
+  upcoming: "Planlaşdırılıb",
   completed: "Tamamlanıb",
   pending: "Gözləyir",
   cancelled: "Ləğv olunub",
@@ -14,12 +16,14 @@ const STATUS_LABELS = {
 
 const STATUS_CLASS = {
   active: "statusActive",
+  upcoming: "statusPending",
   completed: "statusCompleted",
   pending: "statusPending",
   cancelled: "statusCancelled",
 };
 
 function formatDateTime(iso) {
+  if (!iso) return "—";
   const d = new Date(iso);
   return d.toLocaleString("az-AZ", {
     day: "2-digit",
@@ -30,9 +34,36 @@ function formatDateTime(iso) {
   });
 }
 
+function formatDuration(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+  const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+  const s = String(totalSeconds % 60).padStart(2, "0");
+  return `${h}:${m}:${s}`;
+}
+
 const CarReservationsList = () => {
   const navigate = useNavigate();
-  const { reservations } = useReservations();
+  const { reservations, stopReservation } = useReservations();
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleStop = (reservation) => {
+    const parking = parkings.find((p) => p.id === reservation.parkingId);
+    if (!parking) return;
+
+    stopReservation(reservation.id, parking.pricePerHour);
+    updateSpotStatusDirect(
+      reservation.parkingId,
+      reservation.spotId,
+      "empty",
+      null,
+    );
+  };
 
   const sorted = [...reservations].sort(
     (a, b) => new Date(b.startTime) - new Date(a.startTime),
@@ -65,7 +96,21 @@ const CarReservationsList = () => {
           <ul className={styles.list}>
             {sorted.map((r) => {
               const parking = parkings.find((p) => p.id === r.parkingId);
-              const statusKey = STATUS_CLASS[r.status] || "statusPending";
+              const startMs = new Date(r.startTime).getTime();
+              const hasStarted = now >= startMs;
+
+              const isRunning = !r.endTime && hasStarted;
+              const isWaiting = !r.endTime && !hasStarted;
+
+              let statusKey = STATUS_CLASS[r.status] || "statusPending";
+              let statusLabel = STATUS_LABELS[r.status] || r.status;
+              if (isRunning) {
+                statusKey = "statusActive";
+                statusLabel = "Aktiv (davam edir)";
+              } else if (isWaiting) {
+                statusKey = "statusPending";
+                statusLabel = "Planlaşdırılıb";
+              }
 
               return (
                 <li key={r.id} className={styles.card}>
@@ -78,7 +123,7 @@ const CarReservationsList = () => {
                       </span>
                     </div>
                     <span className={`${styles.badge} ${styles[statusKey]}`}>
-                      {STATUS_LABELS[r.status] || r.status}
+                      {statusLabel}
                     </span>
                   </div>
 
@@ -92,13 +137,33 @@ const CarReservationsList = () => {
                       <strong>{r.spotId}</strong>
                     </div>
                     <div className={styles.cardRow}>
-                      <span className={styles.rowLabel}>Başlama</span>
+                      <span className={styles.rowLabel}>Başlanğıc</span>
                       <strong>{formatDateTime(r.startTime)}</strong>
                     </div>
-                    <div className={styles.cardRow}>
-                      <span className={styles.rowLabel}>Bitmə</span>
-                      <strong>{formatDateTime(r.endTime)}</strong>
-                    </div>
+
+                    {isWaiting && (
+                      <div className={styles.cardRow}>
+                        <span className={styles.rowLabel}>
+                          Başlamasına qalıb
+                        </span>
+                        <strong>{formatDuration(startMs - now)}</strong>
+                      </div>
+                    )}
+
+                    {isRunning && (
+                      <div className={styles.cardRow}>
+                        <span className={styles.rowLabel}>Keçən vaxt</span>
+                        <strong>{formatDuration(now - startMs)}</strong>
+                      </div>
+                    )}
+
+                    {!isWaiting && !isRunning && (
+                      <div className={styles.cardRow}>
+                        <span className={styles.rowLabel}>Bitmə</span>
+                        <strong>{formatDateTime(r.endTime)}</strong>
+                      </div>
+                    )}
+
                     <div className={styles.cardRow}>
                       <span className={styles.rowLabel}>Telefon</span>
                       <strong>{r.car.ownerPhone}</strong>
@@ -107,8 +172,22 @@ const CarReservationsList = () => {
 
                   <div className={styles.priceRow}>
                     <span>Qiymət</span>
-                    <strong>{r.totalPrice} AZN</strong>
+                    <strong>
+                      {r.totalPrice != null
+                        ? `${r.totalPrice} AZN`
+                        : "Hesablanacaq"}
+                    </strong>
                   </div>
+
+                  {isRunning && (
+                    <button
+                      type="button"
+                      className={styles.stopBtn}
+                      onClick={() => handleStop(r)}
+                    >
+                      Dayandır
+                    </button>
+                  )}
                 </li>
               );
             })}

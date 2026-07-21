@@ -18,8 +18,296 @@ const STATUS_COLORS = {
   reserved: [245, 158, 11, 0.55],
 };
 
+const MONTHS_AZ = [
+  "Yanvar",
+  "Fevral",
+  "Mart",
+  "Aprel",
+  "May",
+  "İyun",
+  "İyul",
+  "Avqust",
+  "Sentyabr",
+  "Oktyabr",
+  "Noyabr",
+  "Dekabr",
+];
+const WEEKDAYS_AZ = ["B.e", "Ç.a", "Ç", "C.a", "C", "Ş", "B"];
+
+const pad2 = (n) => String(n).padStart(2, "0");
+
+// "YYYY-MM-DDTHH:mm" formatını yerli Date obyektinə çevirir
+const parseLocalValue = (value) => {
+  if (!value) return null;
+  const [datePart, timePart] = value.split("T");
+  const [y, m, d] = datePart.split("-").map(Number);
+  const [hh, mm] = (timePart || "00:00").split(":").map(Number);
+  return new Date(y, m - 1, d, hh, mm);
+};
+
+const toLocalValueDT = (date) =>
+  `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(
+    date.getDate(),
+  )}T${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+
+const isSameDay = (a, b) =>
+  !!a &&
+  !!b &&
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
+
+const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+// Minimum tarix/saat dəyəri — köhnə koddan uyğunluq üçün saxlanılır
+const toLocalDatetimeValue = (date) => toLocalValueDT(date);
+
+/**
+ * Custom, temaya uyğun tarix/saat seçici.
+ * `value`  — "YYYY-MM-DDTHH:mm" formatında string
+ * `onChange(nextValue)` — eyni formatda yeni dəyər qaytarır
+ * `min`    — Date, bundan əvvəlki tarix/saat seçilə bilməz
+ */
+const DateTimePicker = ({ value, onChange, min }) => {
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef(null);
+
+  const selected = parseLocalValue(value) || min || new Date();
+  const [viewDate, setViewDate] = useState(
+    new Date(selected.getFullYear(), selected.getMonth(), 1),
+  );
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const minDay = min ? startOfDay(min) : null;
+  const today = startOfDay(new Date());
+
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth();
+  const firstOfMonth = new Date(year, month, 1);
+  const daysCount = new Date(year, month + 1, 0).getDate();
+
+  // Bazar ertəsi = 0 olacaq şəkildə sürüşdürülür
+  let leading = firstOfMonth.getDay() - 1;
+  if (leading < 0) leading = 6;
+
+  const cells = [];
+  for (let i = 0; i < leading; i++) cells.push(null);
+  for (let d = 1; d <= daysCount; d++) cells.push(new Date(year, month, d));
+
+  const prevDisabled =
+    !!minDay &&
+    (year < minDay.getFullYear() ||
+      (year === minDay.getFullYear() && month <= minDay.getMonth()));
+
+  const goPrevMonth = () => {
+    if (prevDisabled) return;
+    setViewDate(new Date(year, month - 1, 1));
+  };
+  const goNextMonth = () => setViewDate(new Date(year, month + 1, 1));
+
+  const commit = (nextDate) => {
+    let next = nextDate;
+    if (min && next < min) next = new Date(min);
+    onChange(toLocalValueDT(next));
+  };
+
+  const handleSelectDay = (day) => {
+    if (!day) return;
+    if (minDay && startOfDay(day) < minDay) return;
+    commit(
+      new Date(
+        day.getFullYear(),
+        day.getMonth(),
+        day.getDate(),
+        selected.getHours(),
+        selected.getMinutes(),
+      ),
+    );
+  };
+
+  const changeTime = (field, delta) => {
+    let h = selected.getHours();
+    let m = selected.getMinutes();
+    if (field === "hour") h = (h + delta + 24) % 24;
+    else m = (m + delta + 60) % 60;
+    commit(
+      new Date(
+        selected.getFullYear(),
+        selected.getMonth(),
+        selected.getDate(),
+        h,
+        m,
+      ),
+    );
+  };
+
+  const setNow = () => {
+    const now = min && min > new Date() ? new Date(min) : new Date();
+    setViewDate(new Date(now.getFullYear(), now.getMonth(), 1));
+    commit(now);
+  };
+
+  const displayText = value
+    ? selected.toLocaleString("az-AZ", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "Tarix və saat seçin";
+
+  return (
+    <div className={styles.dtField} ref={wrapperRef}>
+      <button
+        type="button"
+        className={styles.dtTrigger}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span>{displayText}</span>
+        <span className={styles.dtTriggerIcon}>📅</span>
+      </button>
+
+      {open && (
+        <div className={styles.dtPopover}>
+          <div className={styles.dtHeader}>
+            <button
+              type="button"
+              className={styles.dtNavBtn}
+              onClick={goPrevMonth}
+              disabled={prevDisabled}
+            >
+              ‹
+            </button>
+            <span className={styles.dtMonthLabel}>
+              {MONTHS_AZ[month]} {year}
+            </span>
+            <button
+              type="button"
+              className={styles.dtNavBtn}
+              onClick={goNextMonth}
+            >
+              ›
+            </button>
+          </div>
+
+          <div className={styles.dtWeekdays}>
+            {WEEKDAYS_AZ.map((w) => (
+              <span key={w}>{w}</span>
+            ))}
+          </div>
+
+          <div className={styles.dtGrid}>
+            {cells.map((day, i) => {
+              if (!day) {
+                return <span key={`e-${i}`} className={styles.dtDayEmpty} />;
+              }
+              const disabled = !!minDay && startOfDay(day) < minDay;
+              const isSelected = isSameDay(day, selected);
+              const isToday = isSameDay(day, today);
+              const classNames = [styles.dtDay];
+              if (disabled) classNames.push(styles.dtDayDisabled);
+              if (isSelected) classNames.push(styles.dtDaySelected);
+              if (isToday && !isSelected) classNames.push(styles.dtDayToday);
+
+              return (
+                <button
+                  type="button"
+                  key={day.toISOString()}
+                  className={classNames.join(" ")}
+                  disabled={disabled}
+                  onClick={() => handleSelectDay(day)}
+                >
+                  {day.getDate()}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className={styles.dtTimeRow}>
+            <div className={styles.dtTimeBlock}>
+              <span className={styles.dtTimeLabel}>Saat</span>
+              <div className={styles.dtTimeControls}>
+                <button
+                  type="button"
+                  className={styles.dtTimeBtn}
+                  onClick={() => changeTime("hour", -1)}
+                >
+                  −
+                </button>
+                <span className={styles.dtTimeValue}>
+                  {pad2(selected.getHours())}
+                </span>
+                <button
+                  type="button"
+                  className={styles.dtTimeBtn}
+                  onClick={() => changeTime("hour", 1)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <span className={styles.dtTimeColon}>:</span>
+
+            <div className={styles.dtTimeBlock}>
+              <span className={styles.dtTimeLabel}>Dəqiqə</span>
+              <div className={styles.dtTimeControls}>
+                <button
+                  type="button"
+                  className={styles.dtTimeBtn}
+                  onClick={() => changeTime("minute", -5)}
+                >
+                  −
+                </button>
+                <span className={styles.dtTimeValue}>
+                  {pad2(selected.getMinutes())}
+                </span>
+                <button
+                  type="button"
+                  className={styles.dtTimeBtn}
+                  onClick={() => changeTime("minute", 5)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.dtFooter}>
+            <button
+              type="button"
+              className={styles.dtQuickBtn}
+              onClick={setNow}
+            >
+              İndi
+            </button>
+            <button
+              type="button"
+              className={styles.dtConfirmBtn}
+              onClick={() => setOpen(false)}
+            >
+              Təsdiqlə
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const CarReservations = () => {
   const { parkingId } = useParams();
+  const navigate = useNavigate();
 
   const parking = parkings.find((p) => p.id === parkingId);
   const { spots, updateSpotStatus } = useSpots(parkingId);
@@ -31,12 +319,13 @@ const CarReservations = () => {
   const spotsRef = useRef(spots);
 
   const [selectedSpot, setSelectedSpot] = useState(null);
+  const [reservationType, setReservationType] = useState("now"); // "now" | "later"
   const [form, setForm] = useState({
     plate: "",
     brand: "",
     color: "",
     phone: "",
-    hours: 1,
+    startTime: "",
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -70,7 +359,14 @@ const CarReservations = () => {
           );
           if (spot) {
             setSelectedSpot(spot);
-            setForm({ plate: "", brand: "", color: "", phone: "", hours: 1 });
+            setReservationType("now");
+            setForm({
+              plate: "",
+              brand: "",
+              color: "",
+              phone: "",
+              startTime: toLocalDatetimeValue(new Date()),
+            });
           }
         }
       });
@@ -109,12 +405,14 @@ const CarReservations = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.plate || !form.brand || !form.phone) return;
+    if (reservationType === "later" && !form.startTime) return;
 
     setSubmitting(true);
 
-    const hours = Number(form.hours) || 1;
-    const startTime = new Date();
-    const endTime = new Date(startTime.getTime() + hours * 60 * 60 * 1000);
+    const startTime =
+      reservationType === "now" ? new Date() : new Date(form.startTime);
+    const spotStatus = reservationType === "now" ? "occupied" : "reserved";
+    const reservationStatus = reservationType === "now" ? "active" : "upcoming";
 
     const reservation = {
       id: `res-${Date.now()}`,
@@ -127,13 +425,13 @@ const CarReservations = () => {
         ownerPhone: form.phone,
       },
       startTime: startTime.toISOString(),
-      endTime: endTime.toISOString(),
-      status: "active",
-      totalPrice: hours * parking.pricePerHour,
+      endTime: null,
+      status: reservationStatus,
+      totalPrice: null,
     };
 
     addReservation(reservation);
-    updateSpotStatus(selectedSpot.id, "occupied", reservation.car);
+    updateSpotStatus(selectedSpot.id, spotStatus, reservation.car);
 
     setSubmitting(false);
     setSelectedSpot(null);
@@ -172,6 +470,10 @@ const CarReservations = () => {
           <div>
             <h2>{parking.name}</h2>
           </div>
+          <div className={styles.availabilityBadge}>
+            <span className={styles.availabilityDot} />
+            {availableCount} boş yer
+          </div>
         </div>
 
         <div className={styles.legend}>
@@ -203,7 +505,9 @@ const CarReservations = () => {
                 <>
                   <h3>Yer {selectedSpot.label}</h3>
                   <p className={styles.occupiedNote}>
-                    Bu yer artıq tutulmuşdur
+                    {selectedSpot.status === "reserved"
+                      ? "Bu yer əvvəlcədən rezerv olunub"
+                      : "Bu yer artıq tutulmuşdur"}
                   </p>
                   {selectedSpot.car && (
                     <div className={styles.infoRow}>
@@ -215,6 +519,28 @@ const CarReservations = () => {
               ) : (
                 <>
                   <h3>Yer {selectedSpot.label} — Rezervasiya</h3>
+
+                  <div className={styles.typeToggle}>
+                    <button
+                      type="button"
+                      className={`${styles.typeBtn} ${
+                        reservationType === "now" ? styles.typeBtnActive : ""
+                      }`}
+                      onClick={() => setReservationType("now")}
+                    >
+                      İndi
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.typeBtn} ${
+                        reservationType === "later" ? styles.typeBtnActive : ""
+                      }`}
+                      onClick={() => setReservationType("later")}
+                    >
+                      Əvvəlcədən
+                    </button>
+                  </div>
+
                   <form onSubmit={handleSubmit} className={styles.form}>
                     <input
                       placeholder="Dövlət nömrəsi (10-AB-234)"
@@ -247,24 +573,28 @@ const CarReservations = () => {
                       }
                       required
                     />
-                    <label className={styles.hoursLabel}>
-                      Neçə saat:
-                      <input
-                        type="number"
-                        min="1"
-                        max="24"
-                        value={form.hours}
-                        onChange={(e) =>
-                          setForm({ ...form, hours: e.target.value })
-                        }
-                      />
-                    </label>
+
+                    {reservationType === "later" && (
+                      <div className={styles.fieldGroup}>
+                        <span className={styles.fieldLabel}>
+                          Başlanğıc vaxtı
+                        </span>
+                        <DateTimePicker
+                          value={form.startTime}
+                          onChange={(val) =>
+                            setForm((f) => ({ ...f, startTime: val }))
+                          }
+                          min={new Date()}
+                        />
+                      </div>
+                    )}
 
                     <div className={styles.priceRow}>
                       <span>Qiymət:</span>
-                      <strong>
-                        {(Number(form.hours) || 1) * parking.pricePerHour} AZN
-                      </strong>
+                      <p className={styles.timerText}>
+                        Dayandırdıqda hesablanacaq ({parking.pricePerHour}{" "}
+                        AZN/saat)
+                      </p>
                     </div>
 
                     <button
@@ -272,7 +602,9 @@ const CarReservations = () => {
                       className={styles.confirmBtn}
                       disabled={submitting}
                     >
-                      Rezervasiyanı təsdiqlə
+                      {reservationType === "now"
+                        ? "İndi rezerv et"
+                        : "Əvvəlcədən rezerv et"}
                     </button>
                   </form>
                 </>

@@ -2,8 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { parkingSpots } from "../../data/mockData";
 import { seedIfEmpty, writeStorage } from "../../services/storage";
 
+const spotsKey = (parkingId) => `spots_${parkingId}`;
+
 export function useSpots(parkingId) {
-  const storageKey = `spots_${parkingId}`;
+  const storageKey = spotsKey(parkingId);
   const [spots, setSpots] = useState([]);
 
   useEffect(() => {
@@ -27,4 +29,15 @@ export function useSpots(parkingId) {
   );
 
   return { spots, updateSpotStatus };
+}
+
+export function updateSpotStatusDirect(parkingId, spotId, status, car = null) {
+  const storageKey = spotsKey(parkingId);
+  const initial = parkingSpots[parkingId] || [];
+  const current = seedIfEmpty(storageKey, initial);
+  const updated = current.map((s) =>
+    s.id === spotId ? { ...s, status, car } : s,
+  );
+  writeStorage(storageKey, updated);
+  return updated;
 }
