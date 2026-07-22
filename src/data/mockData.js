@@ -263,7 +263,161 @@ export function getAvailableCount(parkingId) {
   return spots.filter((s) => s.status === "empty").length;
 }
 
-export const reservations = [];
+// Rezervasiya siyahısı üçün nümunə data (10 ədəd, müxtəlif statuslarla:
+// active / upcoming / completed / cancelled) — real backend qoşulana qədər
+// siyahı ekranının bütün vəziyyətlərini test etmək üçündür.
+export const reservations = [
+  {
+    id: "res-1001",
+    parkingId: "prk-001",
+    spotId: "prk-001-A1",
+    car: {
+      plate: "10-AB-234",
+      brand: "Toyota",
+      color: "Ağ",
+      ownerPhone: "+994 50 234 56 78",
+    },
+    startTime: "2026-07-22T09:15:00.000Z",
+    endTime: null,
+    status: "active",
+    totalPrice: null,
+  },
+  {
+    id: "res-1002",
+    parkingId: "prk-003",
+    spotId: "prk-003-A2",
+    car: {
+      plate: "77-CD-118",
+      brand: "BMW",
+      color: "Qara",
+      ownerPhone: "+994 55 341 22 90",
+    },
+    startTime: "2026-07-22T22:00:00.000Z",
+    endTime: null,
+    status: "upcoming",
+    totalPrice: null,
+  },
+  {
+    id: "res-1003",
+    parkingId: "prk-002",
+    spotId: "prk-002-A3",
+    car: {
+      plate: "90-EF-567",
+      brand: "Hyundai",
+      color: "Gümüşü",
+      ownerPhone: "+994 51 678 90 12",
+    },
+    startTime: "2026-07-21T14:30:00.000Z",
+    endTime: "2026-07-21T17:45:00.000Z",
+    status: "completed",
+    totalPrice: 3.25,
+  },
+  {
+    id: "res-1004",
+    parkingId: "prk-007",
+    spotId: "prk-007-A1",
+    car: {
+      plate: "33-GH-451",
+      brand: "Mercedes",
+      color: "Boz",
+      ownerPhone: "+994 70 112 33 44",
+    },
+    startTime: "2026-07-20T08:00:00.000Z",
+    endTime: "2026-07-20T12:15:00.000Z",
+    status: "completed",
+    totalPrice: 12.75,
+  },
+  {
+    id: "res-1005",
+    parkingId: "prk-004",
+    spotId: "prk-004-A2",
+    car: {
+      plate: "25-IJ-309",
+      brand: "Kia",
+      color: "Göy",
+      ownerPhone: "+994 55 897 65 43",
+    },
+    startTime: "2026-07-23T10:00:00.000Z",
+    endTime: null,
+    status: "upcoming",
+    totalPrice: null,
+  },
+  {
+    id: "res-1006",
+    parkingId: "prk-005",
+    spotId: "prk-005-A1",
+    car: {
+      plate: "62-KL-772",
+      brand: "Nissan",
+      color: "Qırmızı",
+      ownerPhone: "+994 50 456 78 90",
+    },
+    startTime: "2026-07-19T16:20:00.000Z",
+    endTime: "2026-07-19T18:05:00.000Z",
+    status: "cancelled",
+    totalPrice: null,
+  },
+  {
+    id: "res-1007",
+    parkingId: "prk-006",
+    spotId: "prk-006-A3",
+    car: {
+      plate: "14-MN-268",
+      brand: "Chevrolet",
+      color: "Ağ",
+      ownerPhone: "+994 51 223 45 67",
+    },
+    startTime: "2026-07-22T07:45:00.000Z",
+    endTime: null,
+    status: "active",
+    totalPrice: null,
+  },
+  {
+    id: "res-1008",
+    parkingId: "prk-008",
+    spotId: "prk-008-A2",
+    car: {
+      plate: "45-OP-891",
+      brand: "Lexus",
+      color: "Qara",
+      ownerPhone: "+994 70 334 56 78",
+    },
+    startTime: "2026-07-18T11:00:00.000Z",
+    endTime: "2026-07-18T13:30:00.000Z",
+    status: "completed",
+    totalPrice: 5,
+  },
+  {
+    id: "res-1009",
+    parkingId: "prk-001",
+    spotId: "prk-001-A4",
+    car: {
+      plate: "77-QR-635",
+      brand: "Toyota",
+      color: "Gümüşü",
+      ownerPhone: "+994 55 778 90 12",
+    },
+    startTime: "2026-07-24T09:30:00.000Z",
+    endTime: null,
+    status: "upcoming",
+    totalPrice: null,
+  },
+  {
+    id: "res-1010",
+    parkingId: "prk-003",
+    spotId: "prk-003-A5",
+    car: {
+      plate: "90-ST-147",
+      brand: "BMW",
+      color: "Boz",
+      ownerPhone: "+994 50 990 11 22",
+    },
+    startTime: "2026-07-17T13:00:00.000Z",
+    endTime: "2026-07-17T15:20:00.000Z",
+    status: "cancelled",
+    totalPrice: null,
+  },
+];
 
 export const statistics = {
   hourlyOccupancy: [

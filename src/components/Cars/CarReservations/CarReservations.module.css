@@ -20,9 +20,27 @@
   --text-low: #837f73;
 
   min-height: 100vh;
-  background: radial-gradient(120% 100% at 50% -10%, #262319 0%, var(--bg) 55%);
+  background:
+    radial-gradient(
+        1px 1px at 0 0,
+        rgba(255, 255, 255, 0.045) 1px,
+        transparent 0
+      )
+      0 0 / 26px 26px,
+    radial-gradient(120% 100% at 50% -10%, #262319 0%, var(--bg) 55%);
   color: var(--text-hi);
   font-family: "Inter", system-ui, sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page input,
+.page textarea {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
 }
 
 .content {
@@ -34,20 +52,170 @@
 
 .topBar {
   position: absolute;
-  top: 1%;
-  left: 42%;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 5;
   display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background: rgba(34, 31, 27, 0.85);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  align-items: stretch;
+  gap: 0;
+  border-radius: 16px;
+  background: rgba(30, 27, 22, 0.78);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
   border: 1px solid var(--grid-line);
-  box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.55);
+  box-shadow:
+    0 20px 40px -18px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
   width: fit-content;
+  overflow: hidden;
+  animation: dropIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -14px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.topBarMain {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+}
+
+.parkingMark {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--amber-dim);
+  border: 1px solid rgba(182, 255, 63, 0.25);
+  color: var(--amber);
+  font-family: "Manrope", sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.topBar h2 {
+  font-family: "Manrope", sans-serif;
+  font-weight: 800;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  color: var(--text-hi);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.liveTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-low);
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 0 0 var(--amber-glow);
+  animation: livePulse 2s ease-out infinite;
+}
+
+@keyframes livePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(182, 255, 63, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(182, 255, 63, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(182, 255, 63, 0);
+  }
+}
+
+.topBarDivider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--grid-line);
+  margin: 10px 0;
+}
+
+.statsBlock {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 18px;
+  min-width: 168px;
+}
+
+.statsHeadRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.statsCount {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--amber);
+}
+
+.statsCount span {
+  color: var(--text-low);
+  font-weight: 400;
+  font-size: 11px;
+}
+
+.statsLabel {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-low);
+}
+
+.availabilityBar {
+  display: flex;
+  gap: 2px;
+  height: 5px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--bg-panel-soft);
+}
+
+.availabilitySeg {
+  height: 100%;
+  transition: flex-basis 0.4s ease;
+}
+
+.segEmpty {
+  background: var(--amber);
+}
+
+.segOccupied {
+  background: var(--red);
+}
+
+.segReserved {
+  background: var(--cyan);
 }
 
 .backBtn {
@@ -78,14 +246,6 @@
   color: var(--text-hi);
 }
 
-.topBar h2 {
-  font-family: "Manrope", sans-serif;
-  font-weight: 800;
-  font-size: 15px;
-  letter-spacing: -0.015em;
-  color: var(--amber);
-}
-
 .mapWrapper {
   position: absolute;
   inset: 0;
@@ -106,34 +266,56 @@
   bottom: 28px;
   z-index: 4;
   display: flex;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: rgba(34, 31, 27, 0.85);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  gap: 4px;
+  padding: 6px;
+  border-radius: 13px;
+  background: rgba(30, 27, 22, 0.78);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
   border: 1px solid var(--grid-line);
   box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.55);
+  animation: dropIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.legend span {
+.legendItem {
   display: flex;
   align-items: center;
   gap: 7px;
+  padding: 7px 11px;
+  border-radius: 9px;
+  transition: background 0.2s ease;
+}
+
+.legendItem:hover {
+  background: var(--bg-panel-soft);
+}
+
+.legendLabel {
   font-family: "JetBrains Mono", monospace;
   font-size: 10.5px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--text-mid);
+}
+
+.legendCount {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-hi);
+  background: var(--bg-panel-hi);
+  border-radius: 5px;
+  padding: 1px 6px;
 }
 
 .dotGreen,
 .dotRed,
 .dotYellow {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .dotGreen {
@@ -165,9 +347,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 13, 10, 0.6);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  background: rgba(15, 13, 10, 0.65);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
   animation: overlayIn 0.2s ease;
 }
 
@@ -182,22 +364,24 @@
 
 .modal {
   position: relative;
-  width: 340px;
+  width: 360px;
   max-width: calc(100% - 32px);
   max-height: calc(100vh - 64px);
   overflow-y: auto;
   background: var(--bg-panel);
   border: 1px solid var(--grid-line);
-  border-radius: 16px;
-  padding: 26px 24px 24px;
-  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.65);
-  animation: cardIn 0.25s ease;
+  border-radius: 18px;
+  padding: 24px 24px 24px;
+  box-shadow:
+    0 30px 60px -24px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  animation: cardIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes cardIn {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.98);
+    transform: translateY(12px) scale(0.97);
   }
   to {
     opacity: 1;
@@ -230,13 +414,56 @@
   color: var(--text-hi);
 }
 
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 22px 18px 0;
+}
+
+.spotBadge {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--amber-dim);
+  border: 1px solid rgba(182, 255, 63, 0.25);
+  color: var(--amber);
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.spotBadge.badgeRed {
+  background: var(--red-dim);
+  border-color: rgba(255, 107, 92, 0.3);
+  color: var(--red);
+}
+
+.spotBadge.badgeCyan {
+  background: var(--cyan-dim);
+  border-color: rgba(255, 207, 92, 0.3);
+  color: var(--cyan);
+}
+
 .modal h3 {
   font-family: "Manrope", sans-serif;
   font-weight: 700;
-  font-size: 17px;
-  margin: 0 22px 18px 0;
+  font-size: 16.5px;
+  margin: 0;
   line-height: 1.3;
   color: var(--text-hi);
+}
+
+.modalSub {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--text-low);
+  margin-top: 2px;
 }
 
 .occupiedNote {
@@ -279,10 +506,31 @@
   gap: 10px;
 }
 
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-low);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.inputWrap:focus-within .inputIcon {
+  color: var(--amber);
+}
+
 .form input {
   width: 100%;
   box-sizing: border-box;
-  padding: 11px 13px;
+  padding: 11px 13px 11px 38px;
   border-radius: 10px;
   border: 1px solid var(--grid-line);
   background: var(--bg-panel-soft);
@@ -304,24 +552,6 @@
   border-color: rgba(182, 255, 63, 0.4);
   box-shadow: 0 0 0 3px var(--amber-dim);
   background: var(--bg-panel-hi);
-}
-
-.hoursLabel {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2px 2px 2px 4px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-low);
-}
-
-.hoursLabel input {
-  width: 64px;
-  text-align: center;
-  font-family: "JetBrains Mono", monospace;
 }
 
 .priceRow {
@@ -349,6 +579,7 @@
 }
 
 .confirmBtn {
+  position: relative;
   width: 100%;
   margin-top: 6px;
   padding: 13px 16px;
@@ -365,6 +596,10 @@
     transform 0.2s ease,
     box-shadow 0.2s ease,
     opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .confirmBtn:hover {
@@ -377,10 +612,25 @@
 }
 
 .confirmBtn:disabled {
-  opacity: 0.6;
+  opacity: 0.75;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+.spinner {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(26, 24, 21, 0.3);
+  border-top-color: #1a1815;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .typeToggle {
@@ -419,19 +669,6 @@
   box-shadow: 0 0 0 1px rgba(182, 255, 63, 0.25);
 }
 
-.dateInput {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--grid-line);
-  background: var(--bg-panel-hi);
-  color: var(--text-hi);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-  outline: none;
-}
-
 .fieldGroup {
   display: flex;
   flex-direction: column;
@@ -447,7 +684,6 @@
   padding-left: 2px;
 }
 
-/* Custom tarix/saat seçici */
 .dtField {
   position: relative;
   width: 100%;
@@ -698,7 +934,7 @@
   color: var(--text-mid);
   font-family: "Manrope", sans-serif;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11.5px;
   cursor: pointer;
   transition:
     border-color 0.2s ease,
@@ -735,6 +971,69 @@
   font-size: 10px;
 }
 
+.successWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 18px 4px 8px;
+  animation: cardIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.successRing {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--amber-dim);
+  border: 1px solid rgba(182, 255, 63, 0.3);
+  margin-bottom: 16px;
+  animation: ringPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes ringPop {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.successCheck {
+  stroke: var(--amber);
+  stroke-width: 2.5;
+  fill: none;
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: drawCheck 0.4s ease 0.15s forwards;
+}
+
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.successTitle {
+  font-family: "Manrope", sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--text-hi);
+  margin-bottom: 6px;
+}
+
+.successSub {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--text-low);
+  letter-spacing: 0.02em;
+}
+
 @media (max-width: 900px) {
   .content {
     margin-left: 78px;
@@ -744,11 +1043,22 @@
     top: 16px;
     left: 16px;
     right: 16px;
+    transform: none;
     width: auto;
   }
 
+  .topBarMain {
+    padding: 10px 14px;
+  }
+
+  .statsBlock {
+    padding: 10px 14px;
+    min-width: 0;
+    flex: 1;
+  }
+
   .topBar h2 {
-    font-size: 17px;
+    font-size: 14px;
   }
 
   .legend {
@@ -756,6 +1066,11 @@
     right: 16px;
     bottom: 16px;
     justify-content: space-between;
+  }
+
+  .legendItem {
+    flex: 1;
+    justify-content: center;
   }
 
   .modal {
@@ -767,7 +1082,12 @@
   .modal,
   .modalOverlay,
   .confirmBtn,
-  .backBtn {
+  .backBtn,
+  .topBar,
+  .legend,
+  .liveDot,
+  .successRing,
+  .successCheck {
     animation: none;
     transition: none;
   }

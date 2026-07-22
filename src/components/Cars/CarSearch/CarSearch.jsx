@@ -2,7 +2,11 @@ import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./CarSearch.module.css";
 import CarsSidebar from "../CarsSidebar/CarsSidebar";
-import { parkings, getAvailableCount, statistics } from "../../../data/mockData";
+import {
+  parkings,
+  getAvailableCount,
+  statistics,
+} from "../../../data/mockData";
 
 const SORT_OPTIONS = [
   { value: "available", label: "Boş yerlərin sayına görə" },
@@ -52,7 +56,6 @@ const CarSearch = () => {
     <div className={styles.page}>
       <CarsSidebar />
       <main className={styles.content}>
-        {/* ---------- Hero / search ---------- */}
         <section className={styles.hero}>
           <div className={styles.heroInner}>
             <span className={styles.eyebrow}>Canlı axtarış</span>
@@ -90,8 +93,8 @@ const CarSearch = () => {
               </span>
               <i className={styles.tickerDot} />
               <span>
-                <strong>{statistics.summary.averageOccupancyRate}%</strong>{" "}
-                orta doluluq
+                <strong>{statistics.summary.averageOccupancyRate}%</strong> orta
+                doluluq
               </span>
               <i className={styles.tickerDot} />
               <span>
@@ -101,8 +104,7 @@ const CarSearch = () => {
             </div>
           </div>
         </section>
-
-        {/* ---------- Filters ---------- */}
+        F
         <section className={styles.filterBar}>
           <div className={styles.chipGroup}>
             <button
@@ -134,26 +136,31 @@ const CarSearch = () => {
             </select>
           </label>
         </section>
-
-        {/* ---------- Results ---------- */}
         <div className={styles.resultsHeader}>
           <span className={styles.resultsCount}>
             {results.length} nəticə tapıldı
           </span>
           {(query || onlyEV || onlyDisabled) && (
-            <button type="button" className={styles.resetLink} onClick={resetFilters}>
+            <button
+              type="button"
+              className={styles.resetLink}
+              onClick={resetFilters}
+            >
               Filterləri sıfırla
             </button>
           )}
         </div>
-
         {results.length === 0 ? (
           <div className={styles.empty}>
             <span className={styles.emptyIcon} aria-hidden="true">
               ⌕
             </span>
             <p>Axtarışa uyğun parkinq tapılmadı.</p>
-            <button type="button" className={styles.resetBtn} onClick={resetFilters}>
+            <button
+              type="button"
+              className={styles.resetBtn}
+              onClick={resetFilters}
+            >
               Filterləri sıfırla
             </button>
           </div>
