@@ -23,7 +23,11 @@
   flex-direction: column;
   background:
     radial-gradient(120% 60% at 50% -10%, #2b2719 0%, transparent 55%),
-    radial-gradient(80% 50% at 100% 0%, rgba(182, 255, 63, 0.05) 0%, transparent 60%),
+    radial-gradient(
+      80% 50% at 100% 0%,
+      rgba(182, 255, 63, 0.05) 0%,
+      transparent 60%
+    ),
     var(--bg);
   color: var(--text-hi);
   font-family: "Inter", system-ui, sans-serif;
@@ -36,14 +40,13 @@
   margin-left: 268px;
   min-height: 100vh;
   padding: 0 44px 56px;
+  margin-top: -30px;
 }
-
-/* ---------- Hero: full-bleed, layered, signature gauge motif ---------- */
 
 .hero {
   position: relative;
   overflow: hidden;
-  margin: 0 -44px 32px;
+  margin: 0 -44px 22px;
   padding: 72px 44px 56px;
   border-bottom: 1px solid var(--grid-line);
   background:
@@ -64,7 +67,6 @@
     linear-gradient(180deg, #241f16 0%, var(--bg) 100%);
 }
 
-/* signature: giant occupancy-ring, echoing the card gauge, bleeding off the edge */
 .hero::before {
   content: "";
   position: absolute;
@@ -132,8 +134,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .hero h1 {
@@ -212,7 +219,6 @@
   color: var(--text-hi);
 }
 
-/* stats ticker: promoted to a real glass panel row */
 .statsTicker {
   display: flex;
   flex-wrap: wrap;
@@ -246,8 +252,6 @@
   background: var(--text-low);
   display: inline-block;
 }
-
-/* ---------- Filter bar ---------- */
 
 .filterBar {
   display: flex;
@@ -342,8 +346,6 @@
   border-color: rgba(182, 255, 63, 0.4);
 }
 
-/* ---------- Results header ---------- */
-
 .resultsHeader {
   display: flex;
   align-items: center;
@@ -373,8 +375,6 @@
 .resetLink:hover {
   color: var(--text-hi);
 }
-
-/* ---------- Empty state ---------- */
 
 .empty {
   flex: 1;
@@ -430,8 +430,6 @@
   box-shadow: 0 12px 26px -10px var(--amber-glow);
 }
 
-/* ---------- Results grid / cards: bigger, richer ---------- */
-
 .grid {
   flex: 1;
   display: grid;
@@ -448,7 +446,11 @@
   gap: 18px;
   padding: 20px;
   border-radius: 16px;
-  background: linear-gradient(155deg, var(--bg-panel-hi) 0%, var(--bg-panel) 65%);
+  background: linear-gradient(
+    155deg,
+    var(--bg-panel-hi) 0%,
+    var(--bg-panel) 65%
+  );
   border: 1px solid var(--grid-line);
   cursor: pointer;
   overflow: hidden;

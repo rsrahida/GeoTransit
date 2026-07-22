@@ -45,8 +45,6 @@
   }
 }
 
-/* ---------- Entrance animation ---------- */
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -76,8 +74,6 @@
     background-position: 200% 0;
   }
 }
-
-/* ---------- Top bar ---------- */
 
 .topBar {
   display: flex;
@@ -127,8 +123,6 @@
   box-shadow: 0 0 6px var(--amber-glow);
   animation: glowPulse 2s ease-in-out infinite;
 }
-
-/* ---------- Summary cards ---------- */
 
 .summaryGrid {
   display: grid;
@@ -181,7 +175,7 @@
   border-radius: inherit;
   padding: 1px;
   background: linear-gradient(135deg, var(--amber-glow), transparent 40%);
-  -webkit-mask:
+  -webkit-mas:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -228,8 +222,6 @@
 .accentRed {
   color: var(--red);
 }
-
-/* ---------- Charts ---------- */
 
 .chartsGrid {
   display: grid;
