@@ -168,7 +168,7 @@ const CarsSidebar = () => {
 
       <div className={styles.footer}>
         <span className={styles.footerDot} />
-        SİSTEM HAZIRDA AKTİVDİR
+        PARKİNG SİSTEMİ AKTİVDİR
       </div>
     </aside>
   );

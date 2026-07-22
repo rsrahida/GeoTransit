@@ -25,7 +25,6 @@ const CarSearch = () => {
 
   const [query, setQuery] = useState("");
   const [onlyEV, setOnlyEV] = useState(false);
-  const [onlyDisabled, setOnlyDisabled] = useState(false);
   const [sortBy, setSortBy] = useState("available");
 
   const results = useMemo(() => {
@@ -35,8 +34,8 @@ const CarSearch = () => {
       const haystack = `${p.name} ${p.address}`.toLocaleLowerCase("az");
       const matchesQuery = !q || haystack.includes(q);
       const matchesEV = !onlyEV || p.hasEV;
-      const matchesDisabled = !onlyDisabled || p.hasDisabledSpots;
-      return matchesQuery && matchesEV && matchesDisabled;
+
+      return matchesQuery && matchesEV;
     });
 
     return [...filtered].sort((a, b) => {
@@ -44,39 +43,37 @@ const CarSearch = () => {
       if (sortBy === "name") return a.name.localeCompare(b.name, "az");
       return getAvailableCount(b.id) - getAvailableCount(a.id);
     });
-  }, [query, onlyEV, onlyDisabled, sortBy]);
+  }, [query, onlyEV, sortBy]);
 
   const resetFilters = () => {
     setQuery("");
     setOnlyEV(false);
-    setOnlyDisabled(false);
   };
 
   return (
     <div className={styles.page}>
       <CarsSidebar />
+
       <main className={styles.content}>
         <section className={styles.hero}>
           <div className={styles.heroInner}>
             <span className={styles.eyebrow}>Canlı axtarış</span>
-            <h1>Bakıda boş parkinq yeri tap</h1>
 
             <div className={styles.searchBar}>
-              <span className={styles.searchIcon} aria-hidden="true">
-                ⌕
-              </span>
+              <span className={styles.searchIcon}>⌕</span>
+
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Ad və ya ünvana görə axtar — məs. “28 Mall”, “Nizami”"
+                placeholder="Ad və ya ünvana görə axtar — məs. '28 Mall', 'Nizami'"
               />
+
               {query && (
                 <button
                   type="button"
                   className={styles.clearBtn}
                   onClick={() => setQuery("")}
-                  aria-label="Axtarışı təmizlə"
                 >
                   ✕
                 </button>
@@ -87,41 +84,25 @@ const CarSearch = () => {
               <span>
                 <strong>{statistics.summary.totalParkings}</strong> parkinq
               </span>
+
               <i className={styles.tickerDot} />
+
               <span>
-                <strong>{statistics.summary.totalSpots}</strong> yer
-              </span>
-              <i className={styles.tickerDot} />
-              <span>
-                <strong>{statistics.summary.averageOccupancyRate}%</strong> orta
-                doluluq
-              </span>
-              <i className={styles.tickerDot} />
-              <span>
-                <strong>{statistics.summary.totalReservationsToday}</strong>{" "}
-                bugünkü rezervasiya
+                Ümumi <strong>{statistics.summary.totalSpots}</strong> yer
               </span>
             </div>
           </div>
         </section>
-        F
+
         <section className={styles.filterBar}>
           <div className={styles.chipGroup}>
             <button
               type="button"
               className={`${styles.chip} ${onlyEV ? styles.chipActive : ""}`}
               onClick={() => setOnlyEV((v) => !v)}
-              aria-pressed={onlyEV}
             >
-              <span className={styles.chipIcon}>⚡</span> Elektromobil
-            </button>
-            <button
-              type="button"
-              className={`${styles.chip} ${onlyDisabled ? styles.chipActive : ""}`}
-              onClick={() => setOnlyDisabled((v) => !v)}
-              aria-pressed={onlyDisabled}
-            >
-              <span className={styles.chipIcon}>♿</span> Əlillər üçün yer
+              <span className={styles.chipIcon}>⚡</span>
+              Elektromobil
             </button>
           </div>
 
@@ -136,11 +117,13 @@ const CarSearch = () => {
             </select>
           </label>
         </section>
+
         <div className={styles.resultsHeader}>
           <span className={styles.resultsCount}>
             {results.length} nəticə tapıldı
           </span>
-          {(query || onlyEV || onlyDisabled) && (
+
+          {(query || onlyEV) && (
             <button
               type="button"
               className={styles.resetLink}
@@ -150,12 +133,13 @@ const CarSearch = () => {
             </button>
           )}
         </div>
+
         {results.length === 0 ? (
           <div className={styles.empty}>
-            <span className={styles.emptyIcon} aria-hidden="true">
-              ⌕
-            </span>
+            <span className={styles.emptyIcon}>⌕</span>
+
             <p>Axtarışa uyğun parkinq tapılmadı.</p>
+
             <button
               type="button"
               className={styles.resetBtn}
@@ -168,11 +152,14 @@ const CarSearch = () => {
           <div className={styles.grid}>
             {results.map((p) => {
               const available = getAvailableCount(p.id);
+
               const pct = Math.max(
                 0,
                 Math.min(100, Math.round((available / p.totalSpots) * 100)),
               );
+
               const level = gaugeLevel(pct);
+
               const gaugeColor =
                 level === "high"
                   ? "var(--amber)"
@@ -184,18 +171,21 @@ const CarSearch = () => {
                 <article
                   key={p.id}
                   className={styles.card}
-                  onClick={() => navigate(`/cars/parking/${p.id}`)}
+                  onClick={() => navigate("/cars/parking")}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
-                      navigate(`/cars/parking/${p.id}`);
+                      navigate("/cars/parking");
                     }
                   }}
                 >
                   <div
                     className={styles.gauge}
-                    style={{ "--gauge-pct": pct, "--gauge-color": gaugeColor }}
+                    style={{
+                      "--gauge-pct": pct,
+                      "--gauge-color": gaugeColor,
+                    }}
                   >
                     <div className={styles.gaugeInner}>
                       <strong>{available}</strong>
@@ -205,6 +195,7 @@ const CarSearch = () => {
 
                   <div className={styles.cardMain}>
                     <h3>{p.name}</h3>
+
                     <p className={styles.address}>{p.address}</p>
 
                     <div className={styles.tagRow}>
@@ -213,23 +204,20 @@ const CarSearch = () => {
                           {z}
                         </span>
                       ))}
+
                       {p.hasEV && <span className={styles.evTag}>⚡ EV</span>}
-                      {p.hasDisabledSpots && (
-                        <span className={styles.aTag}>♿</span>
-                      )}
                     </div>
 
                     <div className={styles.metaRow}>
                       <span className={styles.hours}>{p.workingHours}</span>
+
                       <span className={styles.price}>
                         {p.pricePerHour} AZN/saat
                       </span>
                     </div>
                   </div>
 
-                  <span className={styles.arrow} aria-hidden="true">
-                    →
-                  </span>
+                  <span className={styles.arrow}>→</span>
                 </article>
               );
             })}
