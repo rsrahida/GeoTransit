@@ -46,7 +46,7 @@ const CarParking = () => {
   const [isListOpen, setIsListOpen] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 600);
+    const timer = setTimeout(() => setIsLoading(false), 3000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -88,7 +88,6 @@ const CarParking = () => {
       });
   }, [userLocation]);
 
-  // Xəritəni yalnız loading bitib DOM elementi mövcud olduqda qururuq
   useEffect(() => {
     if (isLoading || !mapDivRef.current) return;
 

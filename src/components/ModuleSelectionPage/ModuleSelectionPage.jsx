@@ -111,11 +111,19 @@ const ModuleSelectionPage = () => {
           Şəhərin hər hərəkətini <em>bir xəritədə</em> canlandırın
         </h1>
         <p className={styles.subtitle}>
-       GeoTransit nəqliyyat və parkinq xidmətlərinin interaktiv xəritə üzərində idarə olunması və izlənilməsi üçün hazırlanmış GIS əsaslı platformadır.<br/> Parkinq sahələrini, ictimai nəqliyyatı və gələcək şəhər xidmətlərini vahid interaktiv xəritə üzərində<br/> izləməyə, idarə etməyə və analiz etməyə imkan yaradır.
+          GeoTransit nəqliyyat və parkinq xidmətlərinin interaktiv xəritə
+          üzərində idarə olunması və izlənilməsi üçün hazırlanmış GIS əsaslı
+          platformadır.
+          <br /> Parkinq sahələrini, ictimai nəqliyyatı və gələcək şəhər
+          xidmətlərini vahid interaktiv xəritə üzərində
+          <br /> izləməyə, idarə etməyə və analiz etməyə imkan yaradır.
         </p>
 
         <div className={styles.modules}>
-          <Link to="/cars" className={`${styles.card} ${styles.cardCars}`}>
+          <Link
+            to="/cars/parking"
+            className={`${styles.card} ${styles.cardCars}`}
+          >
             <div className={styles.cardTop}>
               <span className={styles.iconWrap}>
                 <CarIcon />
@@ -134,7 +142,10 @@ const ModuleSelectionPage = () => {
             </div>
           </Link>
 
-          <Link to="/buses" className={`${styles.card} ${styles.cardBuses}`}>
+          <Link
+            to="/buses/map"
+            className={`${styles.card} ${styles.cardBuses}`}
+          >
             <div className={styles.cardTop}>
               <span className={styles.iconWrap}>
                 <BusIcon />

@@ -1,0 +1,29 @@
+.sidebar {
+  --bg-panel: #221f1b;
+  --bg-panel-soft: #2b2822;
+  --grid-line: #3a3831;
+  --amber: #b6ff3f;
+  --amber-dim: rgba(182, 255, 63, 0.12);
+  --amber-glow: rgba(182, 255, 63, 0.45);
+  --cyan: #ffcf5c;
+  --cyan-glow: rgba(255, 207, 92, 0.5);
+  --text-hi: #f8f6ee;
+  --text-mid: #c3beb2;
+  --text-low: #837f73;
+
+  width: 268px;
+  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  flex-shrink: 0;
+  background: linear-gradient(160deg, #262319 0%, #1a1815 55%, #17150f 100%);
+  border-right: 1px solid var(--grid-line);
+  display: flex;
+  flex-direction: column;
+  padding: 26px 15px;
+  font-family: "Inter", system-ui, sans-serif;
+  box-sizing: border-box;
+  z-index: 10;
+  overflow: hidden;
+}
