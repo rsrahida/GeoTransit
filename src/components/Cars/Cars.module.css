@@ -1,6 +1,33 @@
 .page {
+  --bg-panel: #221f1b;
+  --bg-panel-soft: #2b2822;
+  --grid-line: #3a3831;
+  --amber: #b6ff3f;
+  --amber-dim: rgba(182, 255, 63, 0.12);
+  --amber-glow: rgba(182, 255, 63, 0.35);
+  --cyan: #ffcf5c;
+  --cyan-dim: rgba(255, 207, 92, 0.12);
+  --red: #ff5c5c;
+  --red-dim: rgba(255, 92, 92, 0.12);
+  --gray: #9a958a;
+  --gray-dim: rgba(154, 149, 138, 0.12);
+  --text-hi: #f8f6ee;
+  --text-mid: #c3beb2;
+  --text-low: #837f73;
+
   min-height: 100vh;
   background: #34332e;
+  background-image:
+    radial-gradient(
+      circle at 15% 0%,
+      rgba(182, 255, 63, 0.05),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 85% 15%,
+      rgba(255, 207, 92, 0.04),
+      transparent 45%
+    );
   font-family: "Inter", system-ui, sans-serif;
 }
 
@@ -15,5 +42,725 @@
   .content {
     margin-left: 76px;
     padding: 24px 20px;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgba(182, 255, 63, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 6px var(--amber-glow));
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.topBar h2 {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--text-hi);
+  background: linear-gradient(
+    90deg,
+    var(--text-hi) 40%,
+    var(--amber) 60%,
+    var(--text-hi) 80%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+.subtitle {
+  display: block;
+  margin-top: 2px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-low);
+}
+
+.subtitle::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 6px var(--amber-glow);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.summaryCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  background: linear-gradient(160deg, #262319 0%, #1a1815 100%);
+  border: 1px solid var(--grid-line);
+  border-radius: 14px;
+  box-shadow: 0 14px 32px -18px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  animation: fadeInUp 0.5s ease both;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.summaryGrid .summaryCard:nth-child(1) {
+  animation-delay: 0.03s;
+}
+.summaryGrid .summaryCard:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.summaryGrid .summaryCard:nth-child(3) {
+  animation-delay: 0.13s;
+}
+.summaryGrid .summaryCard:nth-child(4) {
+  animation-delay: 0.18s;
+}
+.summaryGrid .summaryCard:nth-child(5) {
+  animation-delay: 0.23s;
+}
+.summaryGrid .summaryCard:nth-child(6) {
+  animation-delay: 0.28s;
+}
+
+.summaryCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--amber-glow), transparent 40%);
+  -webkit-mas:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.summaryCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(182, 255, 63, 0.25);
+  box-shadow: 0 18px 36px -16px rgba(0, 0, 0, 0.6);
+}
+
+.summaryCard:hover::before {
+  opacity: 1;
+}
+
+.summaryLabel {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  color: var(--text-low);
+  text-transform: uppercase;
+}
+
+.summaryValue {
+  font-family: "Manrope", sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-hi);
+  transition: color 0.2s ease;
+}
+
+.accentAmber {
+  color: var(--amber);
+}
+
+.accentCyan {
+  color: var(--cyan);
+}
+
+.accentRed {
+  color: var(--red);
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.chartWide {
+  grid-column: span 2;
+}
+
+.chartCard {
+  position: relative;
+  background: linear-gradient(160deg, #262319 0%, #1a1815 100%);
+  border: 1px solid var(--grid-line);
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 14px 32px -14px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  overflow: hidden;
+  animation: fadeInUp 0.55s ease both;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.chartsGrid .chartCard:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.chartsGrid .chartCard:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.chartsGrid .chartCard:nth-child(3) {
+  animation-delay: 0.26s;
+}
+.chartsGrid .chartCard:nth-child(4) {
+  animation-delay: 0.34s;
+}
+
+.chartCard::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--amber), var(--cyan), transparent);
+  opacity: 0;
+  transform: scaleX(0.4);
+  transform-origin: left;
+  transition:
+    opacity 0.3s ease,
+    transform 0.4s ease;
+}
+
+.chartCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(182, 255, 63, 0.2);
+  box-shadow: 0 20px 40px -16px rgba(0, 0, 0, 0.6);
+}
+
+.chartCard:hover::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.chartHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--grid-line);
+}
+
+.chartHeader h3 {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-hi);
+}
+
+.chartHeader span {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--text-low);
+}
+
+.chartCanvasWrap {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  animation: fadeInUp 0.6s ease both;
+}
+
+@media (max-width: 1100px) {
+  .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .chartWide {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .summaryGrid {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+
+  .chartCanvasWrap {
+    height: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topBar,
+  .summaryCard,
+  .chartCard,
+  .chartCanvasWrap,
+  .subtitle::before,
+  .topBar h2 {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.activityMain {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.plate {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--text-hi);
+}
+
+.parkingNameText {
+  font-size: 12px;
+  color: var(--text-low);
+}
+
+.activityTime {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--text-low);
+}
+
+.statusBadge {
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--gray-dim);
+  color: var(--text-mid);
+  white-space: nowrap;
+}
+
+.statusBadge.accentAmber {
+  background: var(--amber-dim);
+}
+
+.statusBadge.accentCyan {
+  background: var(--cyan-dim);
+}
+
+.statusBadge.accentRed {
+  background: var(--red-dim);
+}
+
+.parkingTable,
+.reservationTable {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.parkingTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.parkingRow {
+  display: grid;
+  grid-template-columns: 1.6fr 1.8fr 1.3fr 1fr 0.9fr;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 12px 4px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--grid-line);
+  font-size: 13px;
+  color: var(--text-mid);
+  animation: fadeInUp 0.4s ease both;
+}
+
+.parkingRow:last-child {
+  border-bottom: none;
+}
+
+.parkingRowHead {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-low);
+  padding-bottom: 8px;
+  padding-top: 0;
+  animation: none;
+}
+
+.parkingRowName {
+  font-family: "Manrope", sans-serif;
+  font-weight: 700;
+  color: var(--text-hi);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.tagRow {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.tagEv,
+.tagDisabled {
+  font-style: normal;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.tagEv {
+  background: var(--cyan-dim);
+  color: var(--cyan);
+}
+
+.tagDisabled {
+  background: var(--amber-dim);
+  color: var(--amber);
+}
+
+.occupancyCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.occupancyCell small {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  color: var(--text-low);
+}
+
+.miniBarTrack {
+  width: 100%;
+  height: 5px;
+  background: var(--gray-dim);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.miniBarFill {
+  height: 100%;
+  background: var(--amber);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.miniBarFillWarn {
+  background: var(--red);
+}
+
+.parkingRowAddress {
+  font-size: 12px;
+  color: var(--text-low);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowPaused {
+  opacity: 0.5;
+}
+
+.statusPill {
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.statusPillOn {
+  background: var(--amber-dim);
+  color: var(--amber);
+}
+
+.statusPillOff {
+  background: var(--red-dim);
+  color: var(--red);
+}
+
+.emptyState {
+  padding: 26px 4px;
+  text-align: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  color: var(--text-low);
+}
+
+.searchWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  background: var(--bg-panel-soft);
+  border: 1px solid var(--grid-line);
+  border-radius: 9px;
+  color: var(--text-low);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  color: var(--text-hi);
+}
+
+.searchInput::placeholder {
+  color: var(--text-low);
+}
+
+.resToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.resToolbar .searchWrap {
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 200px;
+}
+
+.resTabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.resTab {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--grid-line);
+  background: var(--bg-panel-soft);
+  color: var(--text-mid);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.resTab:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.resTabActive {
+  background: var(--amber-dim);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.reservationTable {
+  display: flex;
+  flex-direction: column;
+  max-height: 480px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+  margin-right: -6px;
+  scrollbar-gutter: stable;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--grid-line) transparent;
+}
+
+.reservationTable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.reservationTable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.reservationTable::-webkit-scrollbar-thumb {
+  background: var(--grid-line);
+  border-radius: 6px;
+}
+
+.reservationTable::-webkit-scrollbar-thumb:hover {
+  background: var(--amber);
+}
+
+.reservationRow {
+  display: grid;
+  grid-template-columns: 1.3fr 1.4fr 1.1fr 1.1fr 0.9fr 0.9fr 0.9fr;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 4px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--grid-line);
+  font-size: 13px;
+  color: var(--text-mid);
+  animation: fadeInUp 0.4s ease both;
+}
+
+.reservationRow:last-child {
+  border-bottom: none;
+}
+
+.reservationRowHead {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-low);
+  padding-bottom: 8px;
+  padding-top: 0;
+  position: sticky;
+  top: 0;
+  background: #201d18;
+  animation: none;
+  z-index: 1;
+}
+
+.carCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.carPlate {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  color: var(--text-hi);
+}
+
+.carMeta {
+  font-size: 11px;
+  color: var(--text-low);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.btnStop {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  border: 1px solid var(--red);
+  background: var(--red-dim);
+  color: var(--red);
+  padding: 6px 11px;
+  border-radius: 7px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btnStop:hover {
+  box-shadow: 0 0 12px rgba(255, 92, 92, 0.35);
+}
+
+.noAction {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--text-low);
+}
+
+@media (max-width: 1300px) {
+  .reservationRow {
+    grid-template-columns: 1.1fr 1.2fr 0.95fr 0.95fr 0.8fr 0.75fr 0.8fr;
+    font-size: 12px;
+    gap: 10px;
+  }
+
+  .parkingRow {
+    grid-template-columns: 1.4fr 1.6fr 1.1fr 0.9fr 0.8fr;
+    font-size: 12px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .reservationRow,
+  .parkingRow {
+    font-size: 11.5px;
+    gap: 8px;
   }
 }

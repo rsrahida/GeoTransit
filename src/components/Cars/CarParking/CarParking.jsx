@@ -8,6 +8,7 @@ import "@arcgis/core/assets/esri/themes/light/main.css";
 
 import styles from "./CarParking.module.css";
 import CarsSidebar from "../CarsSidebar/CarsSidebar";
+import CarsLoading from "../CarsLoading/CarsLoading";
 import { parkings, getAvailableCount } from "../../../data/mockData";
 import { haversineDistanceKm } from "../../../utils/geo";
 
@@ -38,10 +39,16 @@ const CarParking = () => {
   const viewRef = useRef(null);
   const parkingLayerRef = useRef(null);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [userLocation, setUserLocation] = useState(null);
   const [locationStatus, setLocationStatus] = useState("loading");
   const [selectedParking, setSelectedParking] = useState(null);
   const [isListOpen, setIsListOpen] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -81,7 +88,10 @@ const CarParking = () => {
       });
   }, [userLocation]);
 
+  // Xəritəni yalnız loading bitib DOM elementi mövcud olduqda qururuq
   useEffect(() => {
+    if (isLoading || !mapDivRef.current) return;
+
     const map = new Map({ basemap: "osm" });
 
     const view = new MapView({
@@ -141,7 +151,7 @@ const CarParking = () => {
     viewRef.current = view;
 
     return () => view.destroy();
-  }, []);
+  }, [isLoading]);
 
   useEffect(() => {
     if (!userLocation || !parkingLayerRef.current) return;
@@ -186,117 +196,127 @@ const CarParking = () => {
     <div className={styles.page}>
       <CarsSidebar />
       <main className={styles.content}>
-        <aside
-          className={`${styles.listPanel} ${
-            !isListOpen ? styles.listPanelClosed : ""
-          }`}
-        >
-          <div className={styles.listHeader}>
-            <h2>Parkinqlər</h2>
-            <span className={styles.listSubtitle}>
-              {locationStatus === "loading" && "Lokasiya alınır..."}
-              {locationStatus === "granted" &&
-                "Sizin üçün məsafəyə görə sıralanmış parkinqlər"}
-              {locationStatus === "denied" && "Bütün parkinqlər"}
-            </span>
-          </div>
+        {isLoading ? (
+          <CarsLoading />
+        ) : (
+          <>
+            <aside
+              className={`${styles.listPanel} ${
+                !isListOpen ? styles.listPanelClosed : ""
+              }`}
+            >
+              <div className={styles.listHeader}>
+                <h2>Parkinqlər</h2>
+                <span className={styles.listSubtitle}>
+                  {locationStatus === "loading" && "Lokasiya alınır..."}
+                  {locationStatus === "granted" &&
+                    "Sizin üçün məsafəyə görə sıralanmış parkinqlər"}
+                  {locationStatus === "denied" && "Bütün parkinqlər"}
+                </span>
+              </div>
 
-          <ul className={styles.list}>
-            {sortedParkings.map((p, index) => {
-              const ratio = p.available / p.totalSpots;
-              const badgeClass =
-                ratio > 0.4
-                  ? styles.badgeGreen
-                  : ratio > 0.15
-                    ? styles.badgeYellow
-                    : styles.badgeRed;
+              <ul className={styles.list}>
+                {sortedParkings.map((p, index) => {
+                  const ratio = p.available / p.totalSpots;
+                  const badgeClass =
+                    ratio > 0.4
+                      ? styles.badgeGreen
+                      : ratio > 0.15
+                        ? styles.badgeYellow
+                        : styles.badgeRed;
 
-              return (
-                <li
-                  key={p.id}
-                  className={`${styles.listItem} ${
-                    selectedParking?.id === p.id ? styles.listItemActive : ""
-                  }`}
-                  onClick={() => handleSelectParkingFromList(p)}
-                >
-                  <div className={styles.listItemTop}>
-                    <span className={styles.parkingName}>
-                      {index === 0 && p.distanceKm != null && (
-                        <span className={styles.nearestTag}>Ən yaxın</span>
-                      )}
-                      {p.name}
-                    </span>
-                    <span className={`${styles.badge} ${badgeClass}`}>
-                      {p.available}/{p.totalSpots}
-                    </span>
-                  </div>
-                  <div className={styles.listItemBottom}>
-                    <span className={styles.address}>{p.address}</span>
-                    {p.distanceKm != null && (
-                      <span className={styles.distance}>
-                        {p.distanceKm.toFixed(1)} km
-                      </span>
-                    )}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </aside>
+                  return (
+                    <li
+                      key={p.id}
+                      className={`${styles.listItem} ${
+                        selectedParking?.id === p.id
+                          ? styles.listItemActive
+                          : ""
+                      }`}
+                      onClick={() => handleSelectParkingFromList(p)}
+                    >
+                      <div className={styles.listItemTop}>
+                        <span className={styles.parkingName}>
+                          {index === 0 && p.distanceKm != null && (
+                            <span className={styles.nearestTag}>Ən yaxın</span>
+                          )}
+                          {p.name}
+                        </span>
+                        <span className={`${styles.badge} ${badgeClass}`}>
+                          {p.available}/{p.totalSpots}
+                        </span>
+                      </div>
+                      <div className={styles.listItemBottom}>
+                        <span className={styles.address}>{p.address}</span>
+                        {p.distanceKm != null && (
+                          <span className={styles.distance}>
+                            {p.distanceKm.toFixed(1)} km
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </aside>
 
-        <div className={styles.mapWrapper}>
-          <button
-            className={styles.hamburgerBtn}
-            onClick={() => setIsListOpen((prev) => !prev)}
-            aria-label="Parkinq siyahısını aç/bağla"
-            type="button"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M4 6h16M4 12h16M4 18h16"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-
-          <div ref={mapDivRef} className={styles.mapContainer} />
-
-          {selectedParking && (
-            <div className={styles.infoCard}>
+            <div className={styles.mapWrapper}>
               <button
-                className={styles.closeBtn}
-                onClick={() => setSelectedParking(null)}
+                className={styles.hamburgerBtn}
+                onClick={() => setIsListOpen((prev) => !prev)}
+                aria-label="Parkinq siyahısını aç/bağla"
+                type="button"
               >
-                ✕
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M4 6h16M4 12h16M4 18h16"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </button>
-              <h3>{selectedParking.name}</h3>
-              <p className={styles.infoAddress}>{selectedParking.address}</p>
-              <div className={styles.infoRow}>
-                <span>Boş yer:</span>
-                <strong>
-                  {getAvailableCount(selectedParking.id)}/
-                  {selectedParking.totalSpots}
-                </strong>
-              </div>
-              <div className={styles.infoRow}>
-                <span>Qiymət:</span>
-                <strong>{selectedParking.pricePerHour} AZN/saat</strong>
-              </div>
-              <div className={styles.infoRow}>
-                <span>İş saatları:</span>
-                <strong>{selectedParking.workingHours}</strong>
-              </div>
-              <button
-                className={styles.enterBtn}
-                onClick={() => enterSpotMode(selectedParking.id)}
-              >
-                Parkinqə keç →
-              </button>
+
+              <div ref={mapDivRef} className={styles.mapContainer} />
+
+              {selectedParking && (
+                <div className={styles.infoCard}>
+                  <button
+                    className={styles.closeBtn}
+                    onClick={() => setSelectedParking(null)}
+                  >
+                    ✕
+                  </button>
+                  <h3>{selectedParking.name}</h3>
+                  <p className={styles.infoAddress}>
+                    {selectedParking.address}
+                  </p>
+                  <div className={styles.infoRow}>
+                    <span>Boş yer:</span>
+                    <strong>
+                      {getAvailableCount(selectedParking.id)}/
+                      {selectedParking.totalSpots}
+                    </strong>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <span>Qiymət:</span>
+                    <strong>{selectedParking.pricePerHour} AZN/saat</strong>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <span>İş saatları:</span>
+                    <strong>{selectedParking.workingHours}</strong>
+                  </div>
+                  <button
+                    className={styles.enterBtn}
+                    onClick={() => enterSpotMode(selectedParking.id)}
+                  >
+                    Parkinqə keç →
+                  </button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
       </main>
     </div>
   );

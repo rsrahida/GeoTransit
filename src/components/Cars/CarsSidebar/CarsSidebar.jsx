@@ -109,17 +109,16 @@ const DocIcon = () => (
 );
 
 const menuItems = [
-  { id: 1, title: "Admin Panel", icon: HomeIcon, path: "/cars", end: true },
-  { id: 2, title: "Axtarış", icon: SearchIcon, path: "/cars/search" },
-  { id: 3, title: "Parkinglər", icon: ParkingIcon, path: "/cars/parking" },
+  { id: 1, title: "Parkinglər", icon: ParkingIcon, path: "/cars/parking" },
   {
-    id: 4,
+    id: 2,
     title: "Rezervasiya",
     icon: ClipboardIcon,
     path: "/cars/reservations",
   },
-  { id: 5, title: "Hesabatlar", icon: DocIcon, path: "/cars/reports" },
-  { id: 6, title: "Statistika", icon: ChartIcon, path: "/cars/statistics" },
+  { id: 3, title: "Axtarış", icon: SearchIcon, path: "/cars/search" },
+  { id: 4, title: "Hesabatlar", icon: DocIcon, path: "/cars/reports" },
+  { id: 5, title: "Statistika", icon: ChartIcon, path: "/cars/statistics" },
 ];
 
 const CarsSidebar = () => {
