@@ -1,0 +1,186 @@
+.pageLayout {
+  display: flex;
+  min-height: 100vh;
+  background: #17150f;
+}
+
+.mapWrapper {
+  position: relative;
+  flex: 1;
+  margin-left: 268px;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.mapContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.statusBar {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #25231D;
+  color: #ECBA4C;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statusDot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #63b814;
+  box-shadow: 0 0 8px 1px rgba(99, 184, 20, 0.5);
+}
+/* --- Sağ panel: marşrut siyahısı --- */
+
+.routePanel {
+  width: 360px;
+  flex-shrink: 0;
+  height: 100vh;
+  background: linear-gradient(160deg, #262319 0%, #1a1815 55%, #17150f 100%);
+  border-left: 1px solid #3a3831;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.routePanelHeader {
+  flex-shrink: 0;
+  padding: 24px 22px 16px;
+  border-bottom: 1px solid #3a3831;
+}
+
+.routePanelHeader h3 {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: #f8f6ee;
+}
+
+.routePanelHeader span {
+  display: block;
+  margin-top: 5px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: #837f73;
+}
+
+.routeList {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 8px;
+  min-height: 0;
+}
+
+.routeItem {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 0 16px;
+  border: none;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  color: #c3beb2;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.routeItem:hover:not(:disabled) {
+  background: #2b2822;
+  color: #f8f6ee;
+}
+
+.routeItem:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.routeItemActive {
+  background: rgba(253, 207, 92, 0.1);
+  color: #f8f6ee;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px rgba(253, 207, 92, 0.15);
+}
+
+.routeBadge {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #17150f;
+}
+
+.routeName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.routeSpinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(248, 246, 238, 0.25);
+  border-top-color: #fdcf5c;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1200px) {
+  .routePanel {
+    width: 260px;
+  }
+
+  .routeItem {
+    font-size: 13.5px;
+    padding: 0 12px;
+  }
+
+  .routeBadge {
+    width: 30px;
+    height: 30px;
+  }
+}

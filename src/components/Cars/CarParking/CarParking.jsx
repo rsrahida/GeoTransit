@@ -44,7 +44,7 @@ const CarParking = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [locationStatus, setLocationStatus] = useState("loading");
   const [selectedParking, setSelectedParking] = useState(null);
-  const [isListOpen, setIsListOpen] = useState(false);
+  const [isListOpen, setIsListOpen] = useState(true);
   const [refreshTick, setRefreshTick] = useState(0);
 
   useEffect(() => {
