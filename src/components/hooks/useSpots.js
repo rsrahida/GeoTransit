@@ -31,6 +31,19 @@ export function useSpots(parkingId) {
   return { spots, updateSpotStatus };
 }
 
+export function getSpotsForParking(parkingId) {
+  const storageKey = spotsKey(parkingId);
+  const initial = parkingSpots[parkingId] || [];
+  return seedIfEmpty(storageKey, initial);
+}
+
+export function getLiveAvailability(parkingId) {
+  const spots = getSpotsForParking(parkingId);
+  const total = spots.length;
+  const available = spots.filter((s) => s.status === "empty").length;
+  return { available, total };
+}
+
 export function updateSpotStatusDirect(parkingId, spotId, status, car = null) {
   const storageKey = spotsKey(parkingId);
   const initial = parkingSpots[parkingId] || [];

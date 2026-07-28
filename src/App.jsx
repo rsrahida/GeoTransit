@@ -23,7 +23,10 @@ const App = () => {
         <Route path="/" element={<ModuleSelectionPage />} />
         <Route path="/cars" element={<Cars />} />
         <Route path="/cars/parking" element={<CarParking />} />
-        <Route path="/cars/reservations" element={<CarReservationsList />} />
+        <Route
+          path="/cars/reservations"
+          element={<CarReservationsList />}
+        />
         <Route
           path="/cars/reservations/:parkingId"
           element={<CarReservations />}
@@ -41,7 +44,6 @@ const App = () => {
       </Routes>
     </BrowserRouter>
   );
-  X;
 };
 
 export default App;

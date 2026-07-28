@@ -9,7 +9,8 @@ import "@arcgis/core/assets/esri/themes/light/main.css";
 import styles from "./CarParking.module.css";
 import CarsSidebar from "../CarsSidebar/CarsSidebar";
 import CarsLoading from "../CarsLoading/CarsLoading";
-import { parkings, getAvailableCount } from "../../../data/mockData";
+import { parkings } from "../../../data/mockData";
+import { getLiveAvailability } from "../../hooks/useSpots";
 import { haversineDistanceKm } from "../../../utils/geo";
 
 const BAKU_CENTER = { lat: 40.3725, lng: 49.8533 };
@@ -44,6 +45,7 @@ const CarParking = () => {
   const [locationStatus, setLocationStatus] = useState("loading");
   const [selectedParking, setSelectedParking] = useState(null);
   const [isListOpen, setIsListOpen] = useState(false);
+  const [refreshTick, setRefreshTick] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 3000);
@@ -68,10 +70,22 @@ const CarParking = () => {
     );
   }, []);
 
+  useEffect(() => {
+    const bump = () => setRefreshTick((t) => t + 1);
+    window.addEventListener("focus", bump);
+    window.addEventListener("storage", bump);
+    document.addEventListener("visibilitychange", bump);
+    return () => {
+      window.removeEventListener("focus", bump);
+      window.removeEventListener("storage", bump);
+      document.removeEventListener("visibilitychange", bump);
+    };
+  }, []);
+
   const sortedParkings = useMemo(() => {
     return [...parkings]
       .map((p) => {
-        const available = getAvailableCount(p.id);
+        const { available, total } = getLiveAvailability(p.id);
         const distanceKm = userLocation
           ? haversineDistanceKm(
               userLocation.lat,
@@ -80,13 +94,18 @@ const CarParking = () => {
               p.coordinates.lng,
             )
           : null;
-        return { ...p, available, distanceKm };
+        return {
+          ...p,
+          available,
+          totalSpots: total || p.totalSpots,
+          distanceKm,
+        };
       })
       .sort((a, b) => {
         if (a.distanceKm == null || b.distanceKm == null) return 0;
         return a.distanceKm - b.distanceKm;
       });
-  }, [userLocation]);
+  }, [userLocation, refreshTick]);
 
   useEffect(() => {
     if (isLoading || !mapDivRef.current) return;
@@ -105,8 +124,8 @@ const CarParking = () => {
     parkingLayerRef.current = parkingLayer;
 
     parkings.forEach((p) => {
-      const available = getAvailableCount(p.id);
-      const ratio = available / p.totalSpots;
+      const { available, total } = getLiveAvailability(p.id);
+      const ratio = available / (total || p.totalSpots);
       const colorHex =
         ratio > 0.4
           ? STATUS_COLORS.green
@@ -142,7 +161,13 @@ const CarParking = () => {
         const parking = parkings.find(
           (p) => p.id === result.graphic.attributes.parkingId,
         );
-        setSelectedParking(parking);
+        if (!parking) return;
+        const { available, total } = getLiveAvailability(parking.id);
+        setSelectedParking({
+          ...parking,
+          available,
+          totalSpots: total || parking.totalSpots,
+        });
       });
     });
 
@@ -150,7 +175,7 @@ const CarParking = () => {
     viewRef.current = view;
 
     return () => view.destroy();
-  }, [isLoading]);
+  }, [isLoading, refreshTick]);
 
   useEffect(() => {
     if (!userLocation || !parkingLayerRef.current) return;
@@ -293,8 +318,7 @@ const CarParking = () => {
                   <div className={styles.infoRow}>
                     <span>Boş yer:</span>
                     <strong>
-                      {getAvailableCount(selectedParking.id)}/
-                      {selectedParking.totalSpots}
+                      {selectedParking.available}/{selectedParking.totalSpots}
                     </strong>
                   </div>
                   <div className={styles.infoRow}>

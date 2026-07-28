@@ -9,7 +9,7 @@ const MapIcon = () => (
       stroke="currentColor"
       strokeWidth="1.7"
       strokeLinejoin="round"
-    />
+    /> 
     <path
       d="M9 4.5v13M15 6.5v13"
       stroke="currentColor"
