@@ -26,8 +26,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #25231D;
-  color: #ECBA4C;
+  background: #25231d;
+  color: #ecba4c;
   padding: 10px 20px;
   border-radius: 12px;
   font-size: 13.5px;
@@ -48,7 +48,6 @@
   background: #63b814;
   box-shadow: 0 0 8px 1px rgba(99, 184, 20, 0.5);
 }
-/* --- Sağ panel: marşrut siyahısı --- */
 
 .routePanel {
   width: 360px;
@@ -112,7 +111,9 @@
   text-align: left;
   cursor: pointer;
   box-sizing: border-box;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .routeItem:hover:not(:disabled) {

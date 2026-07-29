@@ -235,7 +235,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--cyan);
+  background:#B5FD3F ;
   box-shadow: 0 0 10px 2px var(--cyan-glow);
   animation: pulseDot 2s ease-in-out infinite;
 }

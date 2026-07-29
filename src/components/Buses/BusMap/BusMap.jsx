@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
@@ -9,22 +10,24 @@ import "@arcgis/core/assets/esri/themes/light/main.css";
 import { busRoutesData } from "../../../data/busRoutesData";
 import { fetchRouteGeometry } from "../../../services/osrmService";
 import { findBusStopsAlongRoute } from "../../../services/overpassService";
+import { dedupeStopsByName } from "../../../utils/stopUtils";
 import BusSidebar from "../BusSidebar/BusSidebar";
 import BusLoading from "../BusLoading/BusLoading";
 import styles from "./BusMap.module.css";
 
 const BusMap = () => {
+  const navigate = useNavigate();
+
   const mapDivRef = useRef(null);
   const viewRef = useRef(null);
-  const layersRef = useRef({}); 
-  const loadedRoutesRef = useRef(new Set()); 
+  const layersRef = useRef({});
+  const loadedRoutesRef = useRef(new Set());
 
   const [isMapReady, setIsMapReady] = useState(false);
   const [selectedRouteId, setSelectedRouteId] = useState(null);
   const [loadingRouteId, setLoadingRouteId] = useState(null);
   const [status, setStatus] = useState("");
 
-  
   useEffect(() => {
     const map = new Map({ basemap: "osm" });
 
@@ -68,7 +71,7 @@ const BusMap = () => {
 
     if (loadedRoutesRef.current.has(routeId)) {
       zoomToLayer(layer);
-      return; 
+      return;
     }
     try {
       setLoadingRouteId(routeId);
@@ -78,7 +81,11 @@ const BusMap = () => {
       drawBusRoute(layer, routeGeometry.coordinates, route.color);
 
       setStatus(`${route.name} — dayanacaqlar tapılır...`);
-      const stops = await findBusStopsAlongRoute(routeGeometry.coordinates, 40);
+      const rawStops = await findBusStopsAlongRoute(
+        routeGeometry.coordinates,
+        40,
+      );
+      const stops = dedupeStopsByName(rawStops);
       drawStops(layer, stops);
 
       loadedRoutesRef.current.add(routeId);
@@ -136,13 +143,48 @@ const BusMap = () => {
     });
   };
 
+  const isRouteReady = (routeId) =>
+    !!routeId && loadedRoutesRef.current.has(routeId);
+
+  const handleStatusClick = () => {
+    if (isRouteReady(selectedRouteId)) {
+      navigate(`/buses/route/${selectedRouteId}`);
+    }
+  };
+
+  const handleStatusKeyDown = (e) => {
+    if ((e.key === "Enter" || e.key === " ") && isRouteReady(selectedRouteId)) {
+      e.preventDefault();
+      navigate(`/buses/route/${selectedRouteId}`);
+    }
+  };
+
   return (
     <div className={styles.pageLayout}>
       <BusSidebar />
 
       <div className={styles.mapWrapper}>
         {!isMapReady && <BusLoading />}
-        {status && <div className={styles.statusBar}>{status}</div>}
+        {status && (
+          <div
+            className={styles.statusBar}
+            role={isRouteReady(selectedRouteId) ? "button" : undefined}
+            tabIndex={isRouteReady(selectedRouteId) ? 0 : undefined}
+            onClick={handleStatusClick}
+            onKeyDown={handleStatusKeyDown}
+            style={{
+              cursor: isRouteReady(selectedRouteId) ? "pointer" : "default",
+            }}
+          >
+            {status}
+            {isRouteReady(selectedRouteId) && (
+              <span className={styles.statusBarHint}>
+                {" "}
+                · marşrut məlumatları →
+              </span>
+            )}
+          </div>
+        )}
         <div ref={mapDivRef} className={styles.mapContainer}></div>
       </div>
 

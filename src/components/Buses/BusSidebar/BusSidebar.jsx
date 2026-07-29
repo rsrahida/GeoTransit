@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { busRoutesData } from "../../../data/busRoutesData";
 import styles from "./BusSidebar.module.css";
 
 const MapIcon = () => (
@@ -9,7 +10,7 @@ const MapIcon = () => (
       stroke="currentColor"
       strokeWidth="1.7"
       strokeLinejoin="round"
-    /> 
+    />
     <path
       d="M9 4.5v13M15 6.5v13"
       stroke="currentColor"
@@ -94,20 +95,45 @@ const ScheduleIcon = () => (
   </svg>
 );
 
+
+const defaultRouteId = busRoutesData.length > 0 ? busRoutesData[0].id : null;
+
 const menuItems = [
-  { id: 1, title: "Xəritə", icon: MapIcon, path: "/buses/map" },
-  { id: 2, title: "Marşrut Detalı", icon: RouteIcon, path: "/buses/route" },
+  { id: 1, title: "Xəritə", icon: MapIcon, path: "/buses/map", end: true },
+  {
+    id: 2,
+    title: "Marşrut Məlumatları",
+    icon: RouteIcon,
+    path: defaultRouteId ? `/buses/route/${defaultRouteId}` : "/buses/route",
+    matchPrefix: "/buses/route",
+  },
   {
     id: 3,
     title: "Canlı İzləmə",
     icon: LiveTrackingIcon,
     path: "/buses/tracking",
+    end: true,
   },
-  { id: 4, title: "Statistika", icon: ChartIcon, path: "/buses/statistics" },
-  { id: 5, title: "Cədvəl", icon: ScheduleIcon, path: "/buses/schedule" },
+  {
+    id: 4,
+    title: "Statistika",
+    icon: ChartIcon,
+    path: "/buses/statistics",
+    end: true,
+  },
+  {
+    id: 5,
+    title: "Cədvəl",
+    icon: ScheduleIcon,
+    path: "/buses/schedule",
+    end: true,
+  },
 ];
 
 const BusSidebar = () => {
+  const currentPath =
+    typeof window !== "undefined" ? window.location.pathname : "";
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logo}>
@@ -133,13 +159,19 @@ const BusSidebar = () => {
       <nav className={styles.menu}>
         {menuItems.map((item) => {
           const Icon = item.icon;
+          const isPrefixActive = item.matchPrefix
+            ? currentPath.startsWith(item.matchPrefix)
+            : false;
+
           return (
             <NavLink
               key={item.id}
               to={item.path}
               end={item.end}
               className={({ isActive }) =>
-                `${styles.menuItem} ${isActive ? styles.active : ""}`
+                `${styles.menuItem} ${
+                  isActive || isPrefixActive ? styles.active : ""
+                }`
               }
             >
               <span className={styles.icon}>
